@@ -54,7 +54,10 @@ impl Database {
 
         let mut stmt = self.conn.prepare("SELECT MAX(number) FROM primes")?;
         let mut primes_iter = stmt.query_map([], |row| row.get::<_, u32>(0))?;
-        let latest_prime = primes_iter.next().unwrap_or(Ok(DEFAULT_PRIME))?;
+        let latest_prime = primes_iter
+            .next()
+            .unwrap_or(Ok(DEFAULT_PRIME))
+            .unwrap_or(DEFAULT_PRIME);
 
         Ok(latest_prime)
     }
