@@ -1,4 +1,4 @@
-use std::{error::Error, time::Instant};
+use std::{env, error::Error, time::Instant};
 
 use chrono::Local;
 use database::Database;
@@ -13,7 +13,7 @@ mod is_prime;
 mod prime_number;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    env_logger::init();
+    setup_logger()?;
     debug!("Execution started.");
 
     let db = Database::setup()?;
@@ -36,4 +36,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         prime_candidate += 1;
     }
+}
+
+fn setup_logger() -> Result<(), Box<dyn Error>> {
+    if env::var("RUST_LOG").unwrap_or("".into()).is_empty() {
+        env::set_var("RUST_LOG", "trace");
+    }
+
+    env_logger::init();
+
+    Ok(())
 }
