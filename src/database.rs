@@ -1,6 +1,5 @@
-use std::{error::Error, fs, io, path::Path, time::Duration};
+use std::{error::Error, fs, io, path::Path};
 
-use chrono::{DateTime, Local};
 use rusqlite::Connection;
 
 use crate::prime_number::PrimeNumber;

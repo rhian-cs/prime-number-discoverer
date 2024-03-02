@@ -1,6 +1,5 @@
 use std::{env, error::Error, time::Instant};
 
-use chrono::Local;
 use database::Database;
 use is_prime::is_prime;
 use log::{debug, info};
