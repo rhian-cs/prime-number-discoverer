@@ -1,4 +1,9 @@
-use std::{env, error::Error, time::Instant};
+use std::{
+    env,
+    error::Error,
+    time::Instant,
+};
+
 
 use database::Database;
 use is_prime::is_prime;
@@ -15,7 +20,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     setup_logger()?;
     debug!("Execution started.");
 
-    let db = Database::setup()?;
+    let mut db = Database::setup()?;
+
     let latest_prime = db.get_latest_prime()?;
 
     let mut prime_candidate = latest_prime;
@@ -30,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             info!("{prime_candidate} is a prime. Took {elapsed_secs}");
 
-            db.insert_prime(PrimeNumber::new(prime_candidate, elapsed_secs))?;
+            db.add_prime(PrimeNumber::new(prime_candidate, elapsed_secs))?;
         }
 
         prime_candidate += 1;
