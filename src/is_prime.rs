@@ -8,7 +8,6 @@ use crate::division_range::partitioned_division_ranges;
 
 const MAX_THREADS: u32 = 12;
 
-#[no_mangle]
 pub fn is_prime(n: u32) -> bool {
     if n <= 1 {
         return false;
