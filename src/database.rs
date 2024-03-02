@@ -3,6 +3,8 @@ use std::{error::Error, fs, io, path::Path, time::Duration};
 use chrono::{DateTime, Local};
 use rusqlite::Connection;
 
+use crate::prime_number::PrimeNumber;
+
 const DATABASE_PATH: &str = "tmp/primes.db";
 
 pub struct Database {
@@ -10,7 +12,7 @@ pub struct Database {
 }
 
 impl Database {
-    pub fn open_and_setup() -> Result<Self, Box<dyn Error>> {
+    pub fn setup() -> Result<Self, Box<dyn Error>> {
         create_parent_directory(DATABASE_PATH)?;
 
         let db = Self {
@@ -19,9 +21,9 @@ impl Database {
 
         db.conn.execute(
             "CREATE TABLE IF NOT EXISTS primes (
-                number     INTEGER,
-                created_at TEXT,
-                elapsed_ms REAL
+                number       INTEGER,
+                created_at   TEXT,
+                elapsed_secs REAL
             )",
             (),
         )?;
@@ -29,21 +31,16 @@ impl Database {
         Ok(db)
     }
 
-    pub fn insert_prime(
-        &self,
-        number: u32,
-        created_at: DateTime<Local>,
-        elapsed: Duration,
-    ) -> Result<(), rusqlite::Error> {
-        let formatted_created_at = created_at.format("%Y-%m-%d %H:%M:%S").to_string();
+    pub fn insert_prime(&self, prime: PrimeNumber) -> Result<(), rusqlite::Error> {
+        let formatted_created_at = prime.created_at.format("%Y-%m-%d %H:%M:%S").to_string();
 
         self.conn.execute(
             "INSERT INTO primes
-            (number, created_at, elapsed_ms)
+            (number, created_at, elapsed_secs)
             VALUES
             (?1, ?2, ?3)
             ",
-            (&number, &formatted_created_at, elapsed.as_secs_f64()),
+            (&prime.number, &formatted_created_at, prime.elapsed_secs),
         )?;
 
         Ok(())

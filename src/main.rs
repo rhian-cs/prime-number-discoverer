@@ -5,15 +5,18 @@ use database::Database;
 use is_prime::is_prime;
 use log::{debug, info};
 
+use crate::prime_number::PrimeNumber;
+
 mod database;
 mod division_range;
 mod is_prime;
+mod prime_number;
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
     debug!("Execution started.");
 
-    let db = Database::open_and_setup()?;
+    let db = Database::setup()?;
     let latest_prime = db.get_latest_prime()?;
 
     let mut prime_candidate = latest_prime;
@@ -24,14 +27,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         let start_time = Instant::now();
 
         if is_prime(prime_candidate) {
-            let elapsed = start_time.elapsed();
+            let elapsed_secs = start_time.elapsed().as_secs_f64();
 
-            info!(
-                "{prime_candidate} is a prime. Took {}",
-                elapsed.as_secs_f64()
-            );
+            info!("{prime_candidate} is a prime. Took {elapsed_secs}");
 
-            db.insert_prime(prime_candidate, Local::now(), elapsed)?;
+            db.insert_prime(PrimeNumber::new(prime_candidate, elapsed_secs))?;
         }
 
         prime_candidate += 1;

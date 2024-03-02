@@ -12,9 +12,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS primes (
-                number     INTEGER,
-                created_at TEXT,
-                elapsed_ms REAL
+                number       INTEGER,
+                created_at   TEXT,
+                elapsed_secs REAL
             )",
         (),
     )?;
