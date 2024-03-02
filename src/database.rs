@@ -43,7 +43,7 @@ impl Database {
             VALUES
             (?1, ?2, ?3)
             ",
-            (&number, &formatted_created_at, elapsed.as_secs_f32()),
+            (&number, &formatted_created_at, elapsed.as_secs_f64()),
         )?;
 
         Ok(())
