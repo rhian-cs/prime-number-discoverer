@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if is_prime(prime_candidate) {
             let elapsed_secs = start_time.elapsed().as_secs_f64();
 
-            info!("{prime_candidate} is a prime. Took {elapsed_secs}");
+            info!("{prime_candidate} is a prime. Took {elapsed_secs} seconds.");
 
             db.add_prime(PrimeNumber::new(prime_candidate, elapsed_secs))?;
         }
