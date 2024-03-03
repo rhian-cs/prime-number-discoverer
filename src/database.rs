@@ -1,4 +1,9 @@
-use std::{error::Error, fs, io, path::Path};
+use std::{
+    error::Error,
+    fs, io,
+    path::Path,
+    time::{Duration, Instant},
+};
 
 use log::debug;
 use rusqlite::Connection;
@@ -10,6 +15,7 @@ const DATABASE_PATH: &str = "tmp/primes.db";
 pub struct Database {
     conn: Connection,
     delayed_primes: Vec<PrimeNumber>,
+    last_saved_at: Instant,
 }
 
 impl Database {
@@ -19,6 +25,7 @@ impl Database {
         let db = Self {
             conn: Connection::open(DATABASE_PATH)?,
             delayed_primes: Vec::new(),
+            last_saved_at: Instant::now(),
         };
 
         db.conn.execute(
@@ -36,8 +43,9 @@ impl Database {
     pub fn add_prime(&mut self, prime: PrimeNumber) -> Result<(), rusqlite::Error> {
         self.delayed_primes.push(prime);
 
-        if self.delayed_primes.len() >= 10000 {
+        if self.last_saved_at.elapsed() > Duration::from_secs(30) {
             self.flush_primes()?;
+            self.last_saved_at = Instant::now();
         }
 
         Ok(())

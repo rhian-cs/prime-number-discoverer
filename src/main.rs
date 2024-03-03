@@ -1,9 +1,4 @@
-use std::{
-    env,
-    error::Error,
-    time::Instant,
-};
-
+use std::{env, error::Error, sync::mpsc::channel, time::Instant};
 
 use database::Database;
 use is_prime::is_prime;
