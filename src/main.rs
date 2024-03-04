@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let latest_prime = db.get_latest_prime()?;
 
-    let mut prime_candidate = latest_prime;
+    let mut prime_candidate = latest_prime + 1;
 
     loop {
         debug!("Now checking if {prime_candidate} is a prime.");
